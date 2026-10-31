@@ -35,12 +35,21 @@ export function TaskForm({ task }: { task?: Task }) {
     router.refresh(); // re-run the SSR list so it reflects the change immediately
   };
 
-  const onError = (e: { message: string; data?: { fieldErrors?: Record<string, string[]> | null } | null }) => {
+  const onError = (e: {
+    message: string;
+    data?: { code?: string; fieldErrors?: Record<string, string[]> | null } | null;
+  }) => {
     const fe = e.data?.fieldErrors;
     if (fe) {
       setErrors({ titulo: fe.titulo?.[0], descricao: fe.descricao?.[0] });
     }
     toast.error(e.message || "Something went wrong");
+    // The task no longer exists (deleted elsewhere): there is nothing left to
+    // edit here, so send the user back to the list instead of a dead form.
+    if (e.data?.code === "NOT_FOUND") {
+      router.push("/");
+      router.refresh();
+    }
   };
 
   const create = useMutation(
