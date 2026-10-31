@@ -32,17 +32,22 @@ function store(): Store {
   return globalForStore.__taskStore;
 }
 
-/** A few fictitious tasks so the list page isn't empty on first load. */
+/** Fictitious seed so the list isn't empty and infinite scroll is visible on first run. */
 function seed(): Store {
   const m: Store = new Map();
   const now = Date.now();
-  const samples: Array<[string, string | undefined]> = [
+  const base: Array<[string, string | undefined]> = [
     ["Read the case brief", "Part 1 theory, Part 2 Next.js + tRPC CRUD"],
     ["Set up tRPC router", "In-memory store, Zod validation, typed errors"],
     ["Build the list page with SSR", undefined],
     ["Build create / edit form", "Functional components + hooks, client validation"],
     ["Write the README", "How it works, how to run, decisions"],
   ];
+  const filler: Array<[string, string | undefined]> = Array.from({ length: 19 }, (_, i) => [
+    `Sample task #${i + 1}`,
+    i % 3 === 0 ? undefined : `Generated to demonstrate pagination (${i + 1})`,
+  ]);
+  const samples = [...filler, ...base]; // base ends up newest (shown first)
   samples.forEach(([titulo, descricao], i) => {
     const id = randomUUID();
     m.set(id, {

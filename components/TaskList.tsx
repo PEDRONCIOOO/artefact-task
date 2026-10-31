@@ -43,20 +43,21 @@ export function TaskList({ initialPage, pageSize }: { initialPage: Page; pageSiz
 
   // Infinite scroll: when the sentinel enters the viewport, fetch the next page.
   const sentinel = useRef<HTMLDivElement | null>(null);
+  const { hasNextPage, isFetchingNextPage, fetchNextPage } = query;
   useEffect(() => {
     const el = sentinel.current;
-    if (!el) return;
+    if (!el || !hasNextPage) return;
     const io = new IntersectionObserver(
       (entries) => {
-        if (entries[0]?.isIntersecting && query.hasNextPage && !query.isFetchingNextPage) {
-          void query.fetchNextPage();
+        if (entries[0]?.isIntersecting && !isFetchingNextPage) {
+          void fetchNextPage();
         }
       },
       { rootMargin: "200px" },
     );
     io.observe(el);
     return () => io.disconnect();
-  }, [query]);
+  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   const items = query.data?.pages.flatMap((p) => p.items) ?? [];
 
