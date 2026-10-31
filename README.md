@@ -14,7 +14,7 @@ npm run build && npm start   # production
 npm run lint
 ```
 
-Node 20+. No database, no env vars. The store is seeded with five fictitious tasks on first access; restarting the server resets it.
+Node 20+. No database, no env vars. The store is seeded with 24 fictitious tasks on first access (enough to see pagination); restarting the server resets it.
 
 ## How it works
 
@@ -66,7 +66,8 @@ Tests (Vitest for the store and router via `createCaller`, Playwright for the tw
 | Meaningful error on update of a missing task | `TaskNotFoundError` → `NOT_FOUND` with message `Task "<id>" was not found` |
 | Delete feedback | Toast success/error in `TaskList` |
 | Loading / success / failure states | Button disabled + label change while pending; toasts; inline field errors; retry button if the list fails to load |
-| Edit a deleted task | Server-side 404 page |
+| Open the edit page of a deleted task | Server-side 404 page |
+| Save a task deleted meanwhile (another tab) | `NOT_FOUND` toast, then redirect to the list |
 
 ---
 
